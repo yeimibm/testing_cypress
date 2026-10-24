@@ -1,7 +1,7 @@
 # Verification ledger
 
-Stages 3 and 4 are implemented and verified. Cypress is ready for phase review;
-Stage 5 (GitHub Actions) remains unimplemented pending approval.
+Stages 3, 4, and 5 are implemented and verified. The published repository passed
+clean-clone checks and an actual Ubuntu GitHub Actions run, detailed below.
 
 ## Setup evidence
 
@@ -122,8 +122,8 @@ major version used to build it.
 
 ## Method adaptations
 
-- The workspace initially contained no files and no Git repository. No worktree,
-  Git initialization, or commits have been performed.
+- The workspace initially contained no files and no Git repository. Stage 3/4
+  used the supplied directory directly; Stage 5 initialized and published Git.
 - Disjoint ownership separates root/docs, backend/packages, and frontend writes.
 - Explicit phase approval takes precedence over skill defaults to execute all work.
 - Superpowers brainstorming, writing-plans, TDD, systematic-debugging,
@@ -140,11 +140,12 @@ major version used to build it.
 
 - Stage 3: implemented, reviewed, verified, and approved.
 - Stage 4: implemented, verified, and approved.
-- Stage 5: workflow implemented and locally validated; remote execution remains pending.
+- Stage 5: implemented, locally validated, clean-clone verified, and passed in GitHub Actions.
 - Keep the current local servers running for user review. Future sessions should
   restart them using the README rather than relying on recorded PIDs.
-- No Git initialization or commits were performed. Engram session-summary tools
-  are unavailable; this file serves as the local handoff record.
+- Stage 3/4 performed no Git writes. Stage 5 initialized and published `main` as
+  recorded below. Engram session-summary tools are unavailable; this file serves
+  as the local handoff record.
 
 ## Stage 4 — Cypress automation
 
@@ -202,7 +203,8 @@ After both the failed startup and successful suite, E2E ports were closed. The
 development servers remained on 3001/5173 with their original PIDs, and the sample
 development order was not reset. Windows process-tree cleanup was exercised.
 Linux group cleanup handles an exited leader and escalates TERM to KILL after a
-bounded grace period; its platform-specific regression remains unexecuted here.
+bounded grace period. Its regression was skipped during this Windows stage and
+subsequently passed in the Ubuntu Stage 5 run.
 
 Individual run logs are `.data/logs/stage4-{success,invalid,recovery}.log`; the full
 suite log is `.data/logs/stage4-full.log`. Current service/build/Cypress logs are
@@ -246,5 +248,60 @@ commit SHAs. The annotated pnpm v4 tag was dereferenced to its commit before use
 
 The validation tool is stored under ignored `.data/tools`; it adds no application
 or workspace dependency. This establishes local workflow syntax/expression
-validation only. Clean-checkout command execution and an actual GitHub Actions run
-remain pending. No remote passing result is claimed from actionlint alone.
+validation only; the clean-clone and actual remote results are recorded below.
+
+### Clean-clone verification
+
+The published initial commit `b74285df6d0e4797e9d1eb7ddb449937036765a8` was cloned
+into `.data/clean-stage5-b74285d` with 83 tracked files. The documented commands
+ran under Node 24.22.1 and pnpm 10.32.1 on Windows, without relying on the working
+directory's dependencies, generated build files, environment file, or database.
+
+| Clean-clone command | Actual result |
+| --- | --- |
+| `pnpm install --frozen-lockfile` | Exit 0 |
+| `Copy-Item .env.example .env` | Defaults copied successfully |
+| `pnpm build` | Exit 0 |
+| `pnpm db:migrate` | Exit 0 |
+| `pnpm db:seed` | Exit 0 |
+| `pnpm lint` | Exit 0 |
+| `pnpm typecheck` | Exit 0 |
+| `pnpm test` | Exit 0; 53 application tests and three runner tests passed; Linux-only fixture skipped on Windows |
+| `pnpm e2e` | Exit 0; all three Cypress scenarios passed |
+
+Logs are retained under `.data/logs/clean-checkout/`. During publication review,
+`.env.example` was found missing from staging and restored with the approved
+`DATABASE_PATH=.data/development.sqlite` and `PORT=3001` defaults. The fresh-clone
+copy and execution verified this prerequisite. A trailing blank line in
+`.gitignore` was removed; `git diff --check` passed. Neither fix changes domain
+behavior.
+
+### Verified GitHub Actions result
+
+The repository was initialized on `main` and published to
+`https://github.com/yeimibm/testing_cypress` with conventional commit
+`feat: add coffee shop prototype with Cypress CI`. No PR or issue was created,
+and no AI attribution or co-author trailer was added.
+
+[Run 40061416926](https://github.com/yeimibm/testing_cypress/actions/runs/40061416926)
+completed successfully on Ubuntu 24.04 for the exact head SHA
+`b74285df6d0e4797e9d1eb7ddb449937036765a8`.
+
+| GitHub Actions check | Actual result |
+| --- | --- |
+| Frozen dependency installation, lint, type checking, build | Passed |
+| Application tests | 53 passed: shared 12, database 7, API 16, web 18 |
+| Runner tests | Four passed, zero skipped; includes cleanup after an owned Linux group leader exits |
+| Cypress | Three specs / three tests passed, zero failures or skips |
+| Failure artifact upload | Correctly skipped because the job succeeded; no actual failure upload is claimed |
+
+The downloaded job log is `.data/logs/actions/40061416926.log`. This remote result
+resolves the earlier Linux execution limitation. The evidence refers to the
+specified code commit; subsequent documentation-only commits require their own
+run result before being described as remotely verified.
+
+All implementation phases and required command verifications are complete. The
+repository is ready for final user review. Failure screenshots and artifact upload
+remain conditional on a failing test/job; this successful run did not exercise
+their runtime upload branch. Engram remains unavailable, so this ledger also
+serves as the session summary and recovery record.

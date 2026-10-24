@@ -41,7 +41,7 @@ pnpm build
 ```
 
 Unit and integration tests use isolated databases. They do not reset development
-data. Check `docs/progress.md` for actual verification evidence and pending work.
+data. Check `docs/progress.md` for verification evidence.
 
 ## Cypress
 
@@ -72,6 +72,10 @@ It installs the pinned Node/pnpm versions and frozen dependencies, then runs lin
 type checks, tests, builds, and `pnpm e2e` on Ubuntu 24.04. The same E2E runner
 prepares SQLite and manages servers locally and in CI.
 
+[Verified CI run](https://github.com/yeimibm/testing_cypress/actions/runs/40061416926)
+passed on Ubuntu 24.04 for commit `b74285d`: 53 application tests, four runner
+tests, and all three Cypress scenarios passed, including Linux process cleanup.
+
 Failed runs retain Cypress screenshots/videos and E2E process logs for seven days
 under the run's **Artifacts** section. No database files or environment secrets are
 uploaded. See `docs/progress.md` for actual local and GitHub verification results.
@@ -95,8 +99,8 @@ pnpm db:reset
 
 This is a local prototype with unprotected product management. It does not include
 payments, authentication, images, file imports, or quantity-based inventory.
-Cypress automation and GitHub Actions configuration are implemented. A passing
-local run or workflow lint does not establish a passing GitHub Actions run.
+The prototype, Cypress automation, and GitHub Actions are implemented and verified.
+The documented setup also passed from a fresh clone on Windows.
 
 See `docs/architecture.md`, `docs/api-contract.md`, and
 `docs/implementation-plan.md` for the design and delivery gates.
