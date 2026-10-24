@@ -37,6 +37,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install and verify Cypress browser
+        run: |
+          pnpm --filter @coffee/e2e exec cypress install
+          pnpm --filter @coffee/e2e exec cypress verify
+
       - name: Lint
         run: pnpm lint
 

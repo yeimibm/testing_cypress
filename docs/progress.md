@@ -1,7 +1,8 @@
 # Verification ledger
 
-Stages 3, 4, and 5 are implemented and verified. The published repository passed
-clean-clone checks and an actual Ubuntu GitHub Actions run, detailed below.
+Stages 3 and 4 are verified. Stage 5 passed clean-clone checks and an initial
+Ubuntu GitHub Actions run; a later warm-cache failure exposed browser provisioning
+that is corrected locally and awaiting a new remote run, detailed below.
 
 ## Setup evidence
 
@@ -140,7 +141,7 @@ major version used to build it.
 
 - Stage 3: implemented, reviewed, verified, and approved.
 - Stage 4: implemented, verified, and approved.
-- Stage 5: implemented, locally validated, clean-clone verified, and passed in GitHub Actions.
+- Stage 5: initial CI passed; a subsequent warm-cache browser-provisioning fix awaits remote verification.
 - Keep the current local servers running for user review. Future sessions should
   restart them using the README rather than relying on recorded PIDs.
 - Stage 3/4 performed no Git writes. Stage 5 initialized and published `main` as
@@ -300,8 +301,37 @@ resolves the earlier Linux execution limitation. The evidence refers to the
 specified code commit; subsequent documentation-only commits require their own
 run result before being described as remotely verified.
 
-All implementation phases and required command verifications are complete. The
-repository is ready for final user review. Failure screenshots and artifact upload
-remain conditional on a failing test/job; this successful run did not exercise
-their runtime upload branch. Engram remains unavailable, so this ledger also
-serves as the session summary and recovery record.
+The initial run established Linux execution. A subsequent warm-cache run exposed
+the provisioning issue recorded below, so the latest workflow correction still
+requires remote verification. Engram remains unavailable; this ledger also serves
+as the session summary and recovery record.
+
+### Warm-cache failure and browser-provisioning correction
+
+[Run 40061698428](https://github.com/yeimibm/testing_cypress/actions/runs/40061698428)
+for documentation commit `cd9a309cca2b011e1db325905ab2034562f18f67` failed before any
+Cypress spec executed. Dependency installation, lint, type checking, build, all 53
+application tests, and all four Linux runner tests passed. The E2E startup error
+reported a missing executable at
+`/home/runner/.cache/Cypress/15.4.0/Cypress/Cypress` despite the npm package being
+installed.
+
+The restored pnpm package-store cache does not contain Cypress's separate browser
+cache. Cached package installation can reuse lifecycle output without provisioning
+that executable on a fresh runner. CI now runs these idempotent commands immediately
+after frozen dependency installation:
+
+```sh
+pnpm --filter @coffee/e2e exec cypress install
+pnpm --filter @coffee/e2e exec cypress verify
+```
+
+The fix changes only CI dependency provisioning; SQLite preparation and server
+orchestration remain in `pnpm e2e`. No additional cache action or application
+dependency was introduced. The failed run is the observed regression evidence;
+the correction must pass a new remote warm-cache run before being called verified.
+The corrected workflow passed actionlint 1.7.12 and `git diff --check`, both exit 0.
+
+Failure-artifact upload was exercised by this run and retained eight process logs
+in [artifact 12546609649](https://github.com/yeimibm/testing_cypress/actions/runs/40061698428/artifacts/12546609649).
+No failure screenshots are claimed: Cypress did not reach spec execution.
