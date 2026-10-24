@@ -81,11 +81,9 @@ installs/verifies Cypress's browser independently of the pnpm cache, then runs
 lint, type checks, tests, builds, and `pnpm e2e` on Ubuntu 24.04. The same E2E runner
 prepares SQLite and manages servers locally and in CI.
 
-[Verified CI run](https://github.com/yeimibm/testing_cypress/actions/runs/40061416926)
-passed on Ubuntu 24.04 for commit `b74285d`: 53 application tests, four runner
+[Verified CI run](https://github.com/yeimibm/testing_cypress/actions/runs/40061962849)
+passed on Ubuntu 24.04 for commit `4f4926e`: 53 application tests, four runner
 tests, and all three Cypress scenarios passed, including Linux process cleanup.
-A later warm-cache run exposed a missing Cypress browser binary. CI now provisions
-it explicitly; remote verification of that correction is pending.
 
 Failed runs retain Cypress screenshots/videos and E2E process logs for seven days
 under the run's **Artifacts** section. No database files or environment secrets are
@@ -110,9 +108,8 @@ pnpm db:reset
 
 This is a local prototype with unprotected product management. It does not include
 payments, authentication, images, file imports, or quantity-based inventory.
-The prototype and Cypress automation are verified. GitHub Actions is implemented;
-its warm-cache browser-provisioning correction awaits a new remote run. The
-documented setup also passed from a fresh clone on Windows.
+The prototype, Cypress automation, and GitHub Actions are implemented and verified.
+The documented setup also passed from a fresh clone on Windows.
 
 See `docs/architecture.md`, `docs/api-contract.md`, and
 `docs/implementation-plan.md` for the design and delivery gates.

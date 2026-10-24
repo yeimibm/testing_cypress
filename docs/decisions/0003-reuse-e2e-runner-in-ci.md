@@ -10,6 +10,12 @@ Action revisions are pinned to commits resolved from their upstream release tags
 Dependency installation uses the committed lockfile and the existing native-build
 allowlist.
 
+CI explicitly runs `cypress install` and `cypress verify` after dependency
+installation. The pnpm cache contains npm package data, not Cypress's separate
+browser cache; cached lifecycle output does not guarantee the executable exists
+on a fresh runner. Idempotent provisioning keeps both cold and warm-cache runs
+reliable without adding a second cache action.
+
 Failed runs upload only Cypress screenshots/videos and E2E process logs. Hidden
 log paths are explicitly included; databases and environment files are not
 artifact targets. Seven-day retention bounds storage while preserving debugging

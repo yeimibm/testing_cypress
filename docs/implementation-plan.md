@@ -66,7 +66,7 @@ Windows execution used Node 24.22.1, pnpm 10.32.1, Cypress 15.4.0, and headless
 Electron 138. The Linux-specific cleanup regression was skipped on Windows and
 subsequently passed in the Ubuntu CI run below.
 
-## CI phase — warm-cache correction awaiting remote verification
+## CI phase — implemented and verified
 
 Implement `.github/workflows/ci.yml` only after E2E approval. Install pinned
 Node/pnpm and frozen dependencies, run lint/typecheck/tests/build/E2E, and preserve
@@ -79,15 +79,15 @@ local inspection alone cannot establish a passing workflow.
 - [x] Workflow passes actionlint validation.
 - [x] README setup and checks pass from a clean checkout.
 - [x] Initial published workflow completes in GitHub Actions, including Linux cleanup test.
-- [ ] Cypress browser provisioning passes a subsequent warm-cache GitHub Actions run.
+- [x] Cypress browser provisioning passes a subsequent warm-cache GitHub Actions run.
 
 The fresh Windows clone passed frozen installation, environment setup, build,
 migrations, seed, lint, type checking, application/runner tests, and Cypress.
-[GitHub Actions run 40061416926](https://github.com/yeimibm/testing_cypress/actions/runs/40061416926)
-passed for commit `b74285df6d0e4797e9d1eb7ddb449937036765a8` on Ubuntu 24.04:
+[GitHub Actions run 40061962849](https://github.com/yeimibm/testing_cypress/actions/runs/40061962849)
+passed for commit `4f4926e1cf7bfb515cc8a3a91ff3ecf20c2ddae1` on Ubuntu 24.04:
 53 application tests, four runner tests without skips, and three Cypress scenarios.
 
-The next run restored the pnpm package cache but lacked Cypress's separate browser
-cache. CI now explicitly runs `cypress install` and `cypress verify` after the
-frozen dependency install. The original passing run remains valid evidence for its
-commit; verification of this warm-cache correction requires a new remote run.
+This run restored the pnpm package cache and successfully installed/verified
+Cypress's separate browser binary. It verifies the correction to the earlier
+warm-cache failure, whose diagnosis and failure artifacts are recorded in
+`progress.md`.

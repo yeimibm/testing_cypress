@@ -1,8 +1,8 @@
 # Verification ledger
 
-Stages 3 and 4 are verified. Stage 5 passed clean-clone checks and an initial
-Ubuntu GitHub Actions run; a later warm-cache failure exposed browser provisioning
-that is corrected locally and awaiting a new remote run, detailed below.
+Stages 3, 4, and 5 are implemented and verified. Clean-clone checks and Ubuntu CI
+passed, including the corrected Cypress browser provisioning on a warm package
+cache. The initial failure and verified correction are recorded below.
 
 ## Setup evidence
 
@@ -141,7 +141,7 @@ major version used to build it.
 
 - Stage 3: implemented, reviewed, verified, and approved.
 - Stage 4: implemented, verified, and approved.
-- Stage 5: initial CI passed; a subsequent warm-cache browser-provisioning fix awaits remote verification.
+- Stage 5: clean-clone checks and Ubuntu CI passed, including the warm-cache browser-provisioning correction.
 - Keep the current local servers running for user review. Future sessions should
   restart them using the README rather than relying on recorded PIDs.
 - Stage 3/4 performed no Git writes. Stage 5 initialized and published `main` as
@@ -302,8 +302,8 @@ specified code commit; subsequent documentation-only commits require their own
 run result before being described as remotely verified.
 
 The initial run established Linux execution. A subsequent warm-cache run exposed
-the provisioning issue recorded below, so the latest workflow correction still
-requires remote verification. Engram remains unavailable; this ledger also serves
+the provisioning issue recorded below; the corrected workflow then passed the
+warm-cache verification run. Engram remains unavailable; this ledger also serves
 as the session summary and recovery record.
 
 ### Warm-cache failure and browser-provisioning correction
@@ -329,9 +329,33 @@ pnpm --filter @coffee/e2e exec cypress verify
 The fix changes only CI dependency provisioning; SQLite preparation and server
 orchestration remain in `pnpm e2e`. No additional cache action or application
 dependency was introduced. The failed run is the observed regression evidence;
-the correction must pass a new remote warm-cache run before being called verified.
+the subsequent remote warm-cache run below verifies the correction.
 The corrected workflow passed actionlint 1.7.12 and `git diff --check`, both exit 0.
 
 Failure-artifact upload was exercised by this run and retained eight process logs
 in [artifact 12546609649](https://github.com/yeimibm/testing_cypress/actions/runs/40061698428/artifacts/12546609649).
 No failure screenshots are claimed: Cypress did not reach spec execution.
+
+### Verified warm-cache correction
+
+[Run 40061962849](https://github.com/yeimibm/testing_cypress/actions/runs/40061962849)
+passed on Ubuntu 24.04 for exact code commit
+`4f4926e1cf7bfb515cc8a3a91ff3ecf20c2ddae1`. Its log explicitly records restoration
+of the existing `node-cache-Linux-x64-pnpm-f46322...` package cache, followed by
+download and successful verification of Cypress 15.4.0 through the new provision
+step. The correction was therefore verified against the cache-hit condition that
+caused the preceding failure, not merely another cold installation.
+
+| Warm-cache CI check | Actual result |
+| --- | --- |
+| Frozen dependencies, explicit Cypress install/verify, lint, type checking, build | Passed |
+| Application tests | 53 passed |
+| Runner tests | Four passed, zero skipped; Linux process-group cleanup passed |
+| Cypress | Three specs / three tests passed, zero failures or skips |
+| Failure artifact upload | Skipped because this run succeeded; the preceding failed run verified log upload |
+
+The downloaded evidence is `.data/logs/actions/40061962849.log`. All implementation
+and required verification phases are complete, and the repository is ready for
+final user review. These results refer to the exact code commit above; no passing
+result is claimed here for a subsequent documentation-only commit before its own
+workflow executes.
