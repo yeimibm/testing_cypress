@@ -1,0 +1,29 @@
+{
+  "name": "coffee-shop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint && eslint scripts/*.mjs",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test && node --test scripts/run-e2e.test.mjs",
+    "test:runner": "node --test scripts/run-e2e.test.mjs",
+    "e2e": "node scripts/run-e2e.mjs",
+    "db:generate": "pnpm --filter @coffee/database db:generate",
+    "db:migrate": "pnpm --filter @coffee/database db:migrate",
+    "db:seed": "pnpm --filter @coffee/database db:seed",
+    "db:reset": "pnpm --filter @coffee/database db:reset"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "eslint": "9.39.1",
+    "globals": "16.5.0",
+    "turbo": "2.11.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.2"
+  }
+}

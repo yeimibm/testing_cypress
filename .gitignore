@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.turbo/
+.playwright-mcp/
+coverage/
+.data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example
+apps/e2e/cypress/screenshots/
+apps/e2e/cypress/videos/
+*.log
+.docs/

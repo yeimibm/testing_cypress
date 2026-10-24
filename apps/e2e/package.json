@@ -1,0 +1,19 @@
+{
+  "name": "@coffee/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "e2e:run": "cypress run"
+  },
+  "devDependencies": {
+    "@coffee/database": "workspace:*",
+    "@coffee/shared": "workspace:*",
+    "@types/node": "22.15.30",
+    "cypress": "15.4.0",
+    "typescript": "5.9.3"
+  }
+}
