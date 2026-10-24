@@ -11,7 +11,7 @@ export function getOrder(handle: DatabaseHandle, id: string): Order | null {
   return { ...order, currency: 'GTQ', items };
 }
 
-export function createOrder(handle: DatabaseHandle, input: CreateOrderInput): Order {
+export function create(handle: DatabaseHandle, input: CreateOrderInput): Order {
   return handle.sqlite.transaction(() => {
     const items: OrderItem[] = input.items.map((item) => {
       const product = handle.db.select().from(products).where(eq(products.id, item.productId)).get();
